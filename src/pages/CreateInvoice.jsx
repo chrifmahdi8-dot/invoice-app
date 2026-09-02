@@ -3,7 +3,6 @@ import { useNavigate } from 'react-router-dom';
 import { useApp } from '../context/AppContext';
 import { formatCurrency, formatDate, generateInvoiceNumber } from '../utils/formatters';
 import { calculateInvoiceTotals } from '../utils/calculations';
-import { generatePDF } from '../utils/pdfGenerator';
 import Button from '../components/UI/Button';
 import Input from '../components/UI/Input';
 
@@ -28,7 +27,6 @@ const CreateInvoice = () => {
   const [taxRate, setTaxRate] = useState(settings?.taxRate || 15);
   const [discountRate, setDiscountRate] = useState(0);
   const [notes, setNotes] = useState('');
-  const [isGenerating, setIsGenerating] = useState(false);
 
   useEffect(() => {
     setInvoiceNumber(generateInvoiceNumber());
@@ -74,15 +72,13 @@ const CreateInvoice = () => {
     navigate('/invoices');
   };
 
-  const handleDownload = async () => {
-    // Must run directly inside the click handler (no setTimeout) so mobile
-    // browsers still treat navigator.share()/download as user-initiated.
-    setIsGenerating(true);
-    try {
-      await generatePDF('invoice-preview', `Invoice-${invoiceNumber}.pdf`);
-    } finally {
-      setIsGenerating(false);
-    }
+  const handleDownload = () => {
+    // Uses the browser's native print engine instead of html2canvas.
+    // This renders real text (correct Arabic/RTL and number ordering,
+    // sharp at any zoom, selectable) instead of a screenshot, and works
+    // reliably on mobile: the user picks "Save as PDF" / shares from the
+    // print preview, no Web Share API or user-gesture timing issues.
+    window.print();
   };
 
   const activeClient = selectedClient ? clients.find(c => c.id === selectedClient) : manualClient;
@@ -93,7 +89,7 @@ const CreateInvoice = () => {
       
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         {/* LEFT: Form */}
-        <div className="bg-white rounded-2xl shadow-sm p-6 space-y-6">
+        <div className="bg-white rounded-2xl shadow-sm p-6 space-y-6 no-print">
           
           <section className="border-b pb-6">
             <h2 className="text-xl font-bold mb-4">{t('معلومات المُرسِل (شركتك)', 'Sender Info')}</h2>
@@ -186,9 +182,8 @@ const CreateInvoice = () => {
               onClick={handleDownload} 
               variant="secondary" 
               className="flex-1"
-              disabled={isGenerating}
             >
-              {isGenerating ? t('جاري التحميل...', 'Downloading...') : t('📥 تحميل PDF', '📥 Download PDF')}
+              {t('📥 تحميل PDF', '📥 Download PDF')}
             </Button>
           </div>
         </div>
