@@ -12,18 +12,27 @@ import { useApp } from './context/AppContext';
 // مكون التخطيط الرئيسي
 function AppLayout() {
   const { isRTL } = useApp();
+  const [isSidebarOpen, setIsSidebarOpen] = React.useState(false);
 
   return (
-    <div dir={isRTL ? 'rtl' : 'ltr'} className="min-h-screen bg-gray-50">
+    <div dir={isRTL ? 'rtl' : 'ltr'} className="min-h-screen bg-gray-50 flex flex-col">
       {/* شريط التنقل العلوي */}
-      <Navbar />
+      <Navbar onMenuClick={() => setIsSidebarOpen(!isSidebarOpen)} />
       
+      {/* خلفية معتمة تظهر فقط في الجوال عندما تكون القائمة مفتوحة */}
+      {isSidebarOpen && (
+        <div 
+          className="fixed inset-0 bg-black/50 z-40 lg:hidden"
+          onClick={() => setIsSidebarOpen(false)}
+        />
+      )}
+
       {/* القائمة الجانبية */}
-      <Sidebar />
+      <Sidebar isOpen={isSidebarOpen} closeSidebar={() => setIsSidebarOpen(false)} />
       
       {/* المحتوى الرئيسي */}
-      <main className={`pt-16 ${isRTL ? 'mr-64' : 'ml-64'} min-h-screen transition-all duration-300`}>
-        <div className="page-container">
+      <main className={`pt-16 ${isRTL ? 'lg:mr-64' : 'lg:ml-64'} min-h-screen transition-all duration-300 w-full overflow-x-hidden`}>
+        <div className="p-4 sm:p-6 lg:p-8 w-full max-w-full">
           <Routes>
             <Route path="/" element={<Dashboard />} />
             <Route path="/create" element={<CreateInvoice />} />
