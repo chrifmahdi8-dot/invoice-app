@@ -1,19 +1,31 @@
-import html2pdf from 'html2pdf.js';
+import html2canvas from 'html2canvas';
+import { jsPDF } from 'jspdf';
 
 export const generatePDF = async (elementId, fileName = 'فاتورة.pdf') => {
   const element = document.getElementById(elementId);
-  if (!element) return;
-
-  const opt = {
-    margin:       0,
-    filename:     fileName,
-    image:        { type: 'jpeg', quality: 0.98 },
-    html2canvas:  { scale: 2, useCORS: true, logging: false },
-    jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
-  };
+  if (!element) return false;
 
   try {
-    await html2pdf().set(opt).from(element).save();
+    // التقاط صورة للعنصر
+    const canvas = await html2canvas(element, {
+      scale: 2, // جودة أعلى
+      useCORS: true, // للسماح بتحميل الصور الخارجية (مثل اللوجو)
+      logging: false,
+      backgroundColor: '#ffffff',
+      imageTimeout: 2000, // لتجنب التجميد إذا كانت الصورة معطوبة
+    });
+    
+    // تحويل الكانفاس إلى صورة
+    const imgData = canvas.toDataURL('image/jpeg', 0.98);
+    
+    // إنشاء ملف PDF
+    const pdf = new jsPDF('p', 'mm', 'a4');
+    const pdfWidth = pdf.internal.pageSize.getWidth();
+    const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
+    
+    // إضافة الصورة للـ PDF وتحميله
+    pdf.addImage(imgData, 'JPEG', 0, 0, pdfWidth, pdfHeight);
+    pdf.save(fileName);
     return true;
   } catch (error) {
     console.error('Error generating PDF:', error);

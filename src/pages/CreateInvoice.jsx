@@ -191,9 +191,8 @@ const CreateInvoice = () => {
           </div>
         </div>
 
-        {/* RIGHT: Preview */}
         <div className="bg-gray-100 rounded-2xl p-6 overflow-auto border">
-          <div id="invoice-preview" className="bg-white p-8 max-w-[210mm] mx-auto min-h-[297mm] shadow-lg text-gray-800" dir={isRTL ? 'rtl' : 'ltr'}>
+          <div id="invoice-preview" className="bg-white p-8 max-w-[210mm] mx-auto min-h-[297mm] text-gray-800" dir={isRTL ? 'rtl' : 'ltr'}>
             <div className="flex justify-between items-start border-b pb-8 mb-8">
               <div>
                 <h2 className="text-3xl font-bold text-gray-800">{senderInfo.companyName || 'Company Name'}</h2>
