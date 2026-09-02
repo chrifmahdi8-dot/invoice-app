@@ -48,8 +48,41 @@
 
 /* Print styles for PDF */
 @media print {
-  body {
+  @page {
+    size: A4;
+    margin: 12mm;
+  }
+
+  html, body {
     background: white !important;
+    margin: 0;
+    padding: 0;
+  }
+
+  /* Hide everything on the page by default */
+  body * {
+    visibility: hidden;
+  }
+
+  /* Reveal only the invoice preview and everything inside it */
+  #invoice-preview,
+  #invoice-preview * {
+    visibility: visible;
+  }
+
+  /* Pull the invoice out of its scrollable/centered wrapper and let it
+     use the full printable page instead of being cropped by max-width
+     or overflow:auto containers. */
+  #invoice-preview {
+    position: absolute;
+    inset: 0;
+    width: 100% !important;
+    max-width: 100% !important;
+    min-height: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    box-shadow: none !important;
+    border: none !important;
   }
 
   .no-print {
