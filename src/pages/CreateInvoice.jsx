@@ -17,6 +17,13 @@ const CreateInvoice = () => {
   const [selectedClient, setSelectedClient] = useState('');
   const [manualClient, setManualClient] = useState({ name: '', email: '', phone: '', address: '' });
   
+  const [senderInfo, setSenderInfo] = useState({
+    companyName: settings?.companyName || '',
+    companyAddress: settings?.companyAddress || '',
+    companyPhone: settings?.companyPhone || '',
+    companyEmail: settings?.companyEmail || '',
+  });
+
   const [items, setItems] = useState([{ id: Date.now(), description: '', quantity: 1, price: 0 }]);
   const [taxRate, setTaxRate] = useState(settings?.taxRate || 15);
   const [discountRate, setDiscountRate] = useState(0);
@@ -52,6 +59,10 @@ const CreateInvoice = () => {
       clientEmail: clientData.email,
       clientPhone: clientData.phone,
       clientAddress: clientData.address,
+      senderName: senderInfo.companyName,
+      senderEmail: senderInfo.companyEmail,
+      senderPhone: senderInfo.companyPhone,
+      senderAddress: senderInfo.companyAddress,
       items,
       taxRate,
       discountRate,
@@ -63,6 +74,15 @@ const CreateInvoice = () => {
     navigate('/invoices');
   };
 
+  const handleDownload = async () => {
+    setIsGenerating(true);
+    // Give UI a moment to show loading state before heavy PDF generation
+    setTimeout(async () => {
+      await generatePDF('invoice-preview', `Invoice-${invoiceNumber}.pdf`);
+      setIsGenerating(false);
+    }, 100);
+  };
+
   const activeClient = selectedClient ? clients.find(c => c.id === selectedClient) : manualClient;
 
   return (
@@ -72,6 +92,17 @@ const CreateInvoice = () => {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         {/* LEFT: Form */}
         <div className="bg-white rounded-2xl shadow-sm p-6 space-y-6">
+          
+          <section className="border-b pb-6">
+            <h2 className="text-xl font-bold mb-4">{t('معلومات المُرسِل (شركتك)', 'Sender Info')}</h2>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <Input label={t('اسم الشركة', 'Company Name')} value={senderInfo.companyName} onChange={e => setSenderInfo({...senderInfo, companyName: e.target.value})} />
+              <Input label={t('العنوان', 'Address')} value={senderInfo.companyAddress} onChange={e => setSenderInfo({...senderInfo, companyAddress: e.target.value})} />
+              <Input label={t('البريد الإلكتروني', 'Email')} type="email" value={senderInfo.companyEmail} onChange={e => setSenderInfo({...senderInfo, companyEmail: e.target.value})} />
+              <Input label={t('رقم الهاتف', 'Phone')} value={senderInfo.companyPhone} onChange={e => setSenderInfo({...senderInfo, companyPhone: e.target.value})} />
+            </div>
+          </section>
+
           <section>
             <h2 className="text-xl font-bold mb-4">{t('معلومات العميل', 'Client Info')}</h2>
             <div className="mb-4">
@@ -150,11 +181,12 @@ const CreateInvoice = () => {
           <div className="flex gap-4">
             <Button onClick={handleSave} className="flex-1">{t('حفظ الفاتورة', 'Save Invoice')}</Button>
             <Button 
-              onClick={() => generatePDF('invoice-preview', invoiceNumber)} 
+              onClick={handleDownload} 
               variant="secondary" 
               className="flex-1"
+              disabled={isGenerating}
             >
-              {t('📥 تحميل PDF', '📥 Download PDF')}
+              {isGenerating ? t('جاري التحميل...', 'Downloading...') : t('📥 تحميل PDF', '📥 Download PDF')}
             </Button>
           </div>
         </div>
@@ -164,10 +196,10 @@ const CreateInvoice = () => {
           <div id="invoice-preview" className="bg-white p-8 max-w-[210mm] mx-auto min-h-[297mm] shadow-lg text-gray-800" dir={isRTL ? 'rtl' : 'ltr'}>
             <div className="flex justify-between items-start border-b pb-8 mb-8">
               <div>
-                <h2 className="text-3xl font-bold text-gray-800">{settings?.companyName || 'Company Name'}</h2>
-                <p className="text-gray-500 mt-2 whitespace-pre-line">{settings?.companyAddress}</p>
-                <p className="text-gray-500">{settings?.companyEmail}</p>
-                <p className="text-gray-500">{settings?.companyPhone}</p>
+                <h2 className="text-3xl font-bold text-gray-800">{senderInfo.companyName || 'Company Name'}</h2>
+                <p className="text-gray-500 mt-2 whitespace-pre-line">{senderInfo.companyAddress}</p>
+                <p className="text-gray-500">{senderInfo.companyEmail}</p>
+                <p className="text-gray-500">{senderInfo.companyPhone}</p>
               </div>
               <div className={isRTL ? 'text-left' : 'text-right'}>
                 <h1 className="text-4xl font-light text-blue-600 mb-2">{t('فاتورة', 'INVOICE')}</h1>

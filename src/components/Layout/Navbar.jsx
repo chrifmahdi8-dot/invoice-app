@@ -32,18 +32,42 @@ export default function Navbar({ onMenuClick }) {
         <select
           value={settings?.currency || 'SAR'}
           onChange={(e) => updateSettings({ currency: e.target.value })}
-          className="text-xs sm:text-sm font-semibold rounded-full bg-gray-50 text-gray-700 hover:bg-gray-100 border border-gray-200 px-2 py-1 sm:px-3 sm:py-1 cursor-pointer outline-none focus:ring-2 focus:ring-blue-500 max-w-[70px] sm:max-w-none"
+          className="text-xs sm:text-sm font-semibold rounded-full bg-gray-50 text-gray-700 hover:bg-gray-100 border border-gray-200 px-2 py-1 sm:px-3 sm:py-1 cursor-pointer outline-none focus:ring-2 focus:ring-blue-500 max-w-[80px] sm:max-w-none"
         >
-          <option value="SAR">SAR</option>
-          <option value="USD">USD</option>
-          <option value="EUR">EUR</option>
-          <option value="AED">AED</option>
-          <option value="KWD">KWD</option>
-          <option value="BHD">BHD</option>
-          <option value="OMR">OMR</option>
-          <option value="QAR">QAR</option>
-          <option value="EGP">EGP</option>
-          <option value="JOD">JOD</option>
+          <optgroup label="عالمية">
+            <option value="USD">USD</option>
+            <option value="EUR">EUR</option>
+          </optgroup>
+          <optgroup label="الخليج">
+            <option value="SAR">SAR</option>
+            <option value="AED">AED</option>
+            <option value="KWD">KWD</option>
+            <option value="BHD">BHD</option>
+            <option value="OMR">OMR</option>
+            <option value="QAR">QAR</option>
+          </optgroup>
+          <optgroup label="شمال أفريقيا">
+            <option value="EGP">EGP</option>
+            <option value="DZD">DZD</option>
+            <option value="MAD">MAD</option>
+            <option value="TND">TND</option>
+            <option value="LYD">LYD</option>
+            <option value="SDG">SDG</option>
+            <option value="MRU">MRU</option>
+          </optgroup>
+          <optgroup label="الشام والعراق">
+            <option value="JOD">JOD</option>
+            <option value="IQD">IQD</option>
+            <option value="LBP">LBP</option>
+            <option value="SYP">SYP</option>
+            <option value="ILS">ILS</option>
+          </optgroup>
+          <optgroup label="أخرى">
+            <option value="YER">YER</option>
+            <option value="SOS">SOS</option>
+            <option value="DJF">DJF</option>
+            <option value="KMF">KMF</option>
+          </optgroup>
         </select>
         
         <button
