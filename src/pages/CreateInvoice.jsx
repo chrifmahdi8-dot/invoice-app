@@ -75,12 +75,14 @@ const CreateInvoice = () => {
   };
 
   const handleDownload = async () => {
+    // Must run directly inside the click handler (no setTimeout) so mobile
+    // browsers still treat navigator.share()/download as user-initiated.
     setIsGenerating(true);
-    // Give UI a moment to show loading state before heavy PDF generation
-    setTimeout(async () => {
+    try {
       await generatePDF('invoice-preview', `Invoice-${invoiceNumber}.pdf`);
+    } finally {
       setIsGenerating(false);
-    }, 100);
+    }
   };
 
   const activeClient = selectedClient ? clients.find(c => c.id === selectedClient) : manualClient;
