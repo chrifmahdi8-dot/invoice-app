@@ -1,0 +1,86 @@
+@import "tailwindcss";
+
+/* Custom styles */
+@layer base {
+  body {
+    @apply bg-gray-50 text-gray-900 antialiased;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  }
+}
+
+@layer components {
+  .stat-card {
+    @apply rounded-2xl p-6 text-white shadow-lg transition-transform hover:scale-105;
+  }
+
+  .page-container {
+    @apply p-6 lg:p-8;
+  }
+
+  .card {
+    @apply bg-white rounded-2xl shadow-sm p-6;
+  }
+
+  .badge {
+    @apply px-3 py-1 rounded-full text-xs font-medium;
+  }
+
+  .badge-paid {
+    @apply bg-green-100 text-green-700;
+  }
+
+  .badge-pending {
+    @apply bg-yellow-100 text-yellow-700;
+  }
+
+  .badge-overdue {
+    @apply bg-red-100 text-red-700;
+  }
+
+  .table-header {
+    @apply px-4 py-3 text-sm font-medium text-gray-500 uppercase tracking-wider;
+  }
+
+  .table-cell {
+    @apply px-4 py-4 text-sm text-gray-700;
+  }
+}
+
+/* Print styles for PDF */
+@media print {
+  body {
+    background: white !important;
+  }
+
+  .no-print {
+    display: none !important;
+  }
+}
+
+/* RTL support */
+[dir="rtl"] {
+  text-align: right;
+}
+
+[dir="ltr"] {
+  text-align: left;
+}
+
+/* Invoice template styles */
+.invoice-template {
+  @apply bg-white p-8;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.invoice-template table {
+  @apply w-full border-collapse;
+}
+
+.invoice-template th {
+  @apply bg-gray-50 px-4 py-3 text-sm font-semibold text-gray-700 border-b-2 border-gray-200;
+}
+
+.invoice-template td {
+  @apply px-4 py-3 text-sm border-b border-gray-100;
+}
