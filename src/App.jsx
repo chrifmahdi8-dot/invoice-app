@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import AppProvider from './context/AppContext';
 import Navbar from './components/Layout/Navbar';
@@ -12,7 +13,7 @@ import { useApp } from './context/AppContext';
 // مكون التخطيط الرئيسي
 function AppLayout() {
   const { isRTL } = useApp();
-  const [isSidebarOpen, setIsSidebarOpen] = React.useState(false);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   return (
     <div dir={isRTL ? 'rtl' : 'ltr'} className="min-h-screen bg-gray-50 flex flex-col">
